@@ -1,0 +1,301 @@
+bucket_id,bucket,month,health,n
+residential_realty,Residential Real Estate,2024-08,0.308,552
+residential_realty,Residential Real Estate,2024-09,0.1615,291
+residential_realty,Residential Real Estate,2024-10,0.3825,183
+residential_realty,Residential Real Estate,2024-11,0.3947,152
+residential_realty,Residential Real Estate,2024-12,0.3203,153
+residential_realty,Residential Real Estate,2025-01,0.2412,170
+residential_realty,Residential Real Estate,2025-02,0.303,99
+residential_realty,Residential Real Estate,2025-03,0.3043,161
+residential_realty,Residential Real Estate,2025-04,0.2125,160
+residential_realty,Residential Real Estate,2025-05,0.3443,122
+residential_realty,Residential Real Estate,2025-06,0.0643,140
+residential_realty,Residential Real Estate,2025-07,0.2717,173
+residential_realty,Residential Real Estate,2025-08,0.2344,128
+residential_realty,Residential Real Estate,2025-09,0.2421,95
+residential_realty,Residential Real Estate,2025-10,0.2532,158
+residential_realty,Residential Real Estate,2025-11,0.3056,144
+residential_realty,Residential Real Estate,2025-12,0.3143,140
+residential_realty,Residential Real Estate,2026-01,0.1645,152
+residential_realty,Residential Real Estate,2026-02,0.1941,273
+residential_realty,Residential Real Estate,2026-03,0.1869,107
+residential_realty,Residential Real Estate,2026-04,0.3281,128
+residential_realty,Residential Real Estate,2026-05,0.3675,117
+residential_realty,Residential Real Estate,2026-06,0.3511,188
+residential_realty,Residential Real Estate,2026-07,0.3879,232
+residential_realty,Residential Real Estate,2026-08,0.1667,24
+policy_regulation,"Policy, Regulation & Schemes",2024-08,0.1004,259
+policy_regulation,"Policy, Regulation & Schemes",2024-09,-0.1121,107
+policy_regulation,"Policy, Regulation & Schemes",2024-10,0.0294,68
+policy_regulation,"Policy, Regulation & Schemes",2024-11,-0.1,60
+policy_regulation,"Policy, Regulation & Schemes",2024-12,-0.012,83
+policy_regulation,"Policy, Regulation & Schemes",2025-01,0.2017,119
+policy_regulation,"Policy, Regulation & Schemes",2025-02,0.3038,79
+policy_regulation,"Policy, Regulation & Schemes",2025-03,-0.0308,65
+policy_regulation,"Policy, Regulation & Schemes",2025-04,-0.1017,59
+policy_regulation,"Policy, Regulation & Schemes",2025-05,0.0,41
+policy_regulation,"Policy, Regulation & Schemes",2025-06,0.0328,61
+policy_regulation,"Policy, Regulation & Schemes",2025-07,0.15,40
+policy_regulation,"Policy, Regulation & Schemes",2025-08,-0.0484,62
+policy_regulation,"Policy, Regulation & Schemes",2025-09,0.0973,113
+policy_regulation,"Policy, Regulation & Schemes",2025-10,0.0577,52
+policy_regulation,"Policy, Regulation & Schemes",2025-11,0.1,50
+policy_regulation,"Policy, Regulation & Schemes",2025-12,-0.026,77
+policy_regulation,"Policy, Regulation & Schemes",2026-01,0.2278,79
+policy_regulation,"Policy, Regulation & Schemes",2026-02,0.116,181
+policy_regulation,"Policy, Regulation & Schemes",2026-03,-0.1071,56
+policy_regulation,"Policy, Regulation & Schemes",2026-04,0.0143,70
+policy_regulation,"Policy, Regulation & Schemes",2026-05,-0.0189,53
+policy_regulation,"Policy, Regulation & Schemes",2026-06,0.0769,91
+policy_regulation,"Policy, Regulation & Schemes",2026-07,-0.0808,99
+policy_regulation,"Policy, Regulation & Schemes",2026-08,0.0417,24
+cement,Cement,2024-08,0.1944,108
+cement,Cement,2024-09,0.1667,48
+cement,Cement,2024-10,0.1789,95
+cement,Cement,2024-11,-0.2812,64
+cement,Cement,2024-12,0.5541,74
+cement,Cement,2025-01,0.102,98
+cement,Cement,2025-02,0.2857,42
+cement,Cement,2025-03,0.4286,70
+cement,Cement,2025-04,0.3714,70
+cement,Cement,2025-05,0.4459,74
+cement,Cement,2025-06,0.6491,57
+cement,Cement,2025-07,0.5152,66
+cement,Cement,2025-08,0.3333,150
+cement,Cement,2025-09,0.4464,56
+cement,Cement,2025-10,0.4894,47
+cement,Cement,2025-11,0.4839,62
+cement,Cement,2025-12,0.48,50
+cement,Cement,2026-01,0.2727,44
+cement,Cement,2026-02,0.5227,44
+cement,Cement,2026-03,0.5294,34
+cement,Cement,2026-04,0.5789,57
+cement,Cement,2026-05,0.0789,76
+cement,Cement,2026-06,0.4737,38
+cement,Cement,2026-07,0.4444,72
+cement,Cement,2026-08,-0.2727,11
+rail_metro,Railways & Metro,2024-08,0.3209,134
+rail_metro,Railways & Metro,2024-09,0.3563,87
+rail_metro,Railways & Metro,2024-10,0.3372,86
+rail_metro,Railways & Metro,2024-11,0.413,46
+rail_metro,Railways & Metro,2024-12,0.4655,58
+rail_metro,Railways & Metro,2025-01,0.2289,83
+rail_metro,Railways & Metro,2025-02,0.2,40
+rail_metro,Railways & Metro,2025-03,0.2778,54
+rail_metro,Railways & Metro,2025-04,0.381,63
+rail_metro,Railways & Metro,2025-05,0.0161,62
+rail_metro,Railways & Metro,2025-06,0.1538,65
+rail_metro,Railways & Metro,2025-07,0.2453,53
+rail_metro,Railways & Metro,2025-08,0.1912,68
+rail_metro,Railways & Metro,2025-09,0.325,80
+rail_metro,Railways & Metro,2025-10,0.125,64
+rail_metro,Railways & Metro,2025-11,0.1,40
+rail_metro,Railways & Metro,2025-12,0.5,42
+rail_metro,Railways & Metro,2026-01,0.25,36
+rail_metro,Railways & Metro,2026-02,0.3714,70
+rail_metro,Railways & Metro,2026-03,0.3929,56
+rail_metro,Railways & Metro,2026-04,0.3654,52
+rail_metro,Railways & Metro,2026-05,0.4507,71
+rail_metro,Railways & Metro,2026-06,0.2836,67
+rail_metro,Railways & Metro,2026-07,0.325,80
+rail_metro,Railways & Metro,2026-08,0.6,5
+roads_highways,Roads & Highways,2024-08,0.4167,84
+roads_highways,Roads & Highways,2024-09,0.2,55
+roads_highways,Roads & Highways,2024-10,0.1389,36
+roads_highways,Roads & Highways,2024-11,0.2143,28
+roads_highways,Roads & Highways,2024-12,0.2373,59
+roads_highways,Roads & Highways,2025-01,-0.0882,34
+roads_highways,Roads & Highways,2025-02,-0.0333,30
+roads_highways,Roads & Highways,2025-03,0.2708,48
+roads_highways,Roads & Highways,2025-04,0.3472,72
+roads_highways,Roads & Highways,2025-05,0.25,44
+roads_highways,Roads & Highways,2025-06,-0.1429,35
+roads_highways,Roads & Highways,2025-07,0.1071,56
+roads_highways,Roads & Highways,2025-08,0.0,54
+roads_highways,Roads & Highways,2025-09,0.4717,53
+roads_highways,Roads & Highways,2025-10,0.3256,43
+roads_highways,Roads & Highways,2025-11,0.2727,33
+roads_highways,Roads & Highways,2025-12,0.3667,30
+roads_highways,Roads & Highways,2026-01,0.4348,46
+roads_highways,Roads & Highways,2026-02,0.3735,83
+roads_highways,Roads & Highways,2026-03,0.3167,60
+roads_highways,Roads & Highways,2026-04,0.4079,76
+roads_highways,Roads & Highways,2026-05,0.2708,48
+roads_highways,Roads & Highways,2026-06,0.4667,75
+roads_highways,Roads & Highways,2026-07,0.3294,85
+roads_highways,Roads & Highways,2026-08,-0.125,24
+safety_legal,"Site Safety, Accidents & Legal",2024-08,-0.6333,30
+safety_legal,"Site Safety, Accidents & Legal",2024-09,-0.5128,39
+safety_legal,"Site Safety, Accidents & Legal",2024-10,-0.7115,52
+safety_legal,"Site Safety, Accidents & Legal",2024-11,-0.6512,43
+safety_legal,"Site Safety, Accidents & Legal",2024-12,-0.625,56
+safety_legal,"Site Safety, Accidents & Legal",2025-01,-0.7308,52
+safety_legal,"Site Safety, Accidents & Legal",2025-02,-0.5208,48
+safety_legal,"Site Safety, Accidents & Legal",2025-03,-0.64,50
+safety_legal,"Site Safety, Accidents & Legal",2025-04,-0.4754,61
+safety_legal,"Site Safety, Accidents & Legal",2025-05,-0.5405,37
+safety_legal,"Site Safety, Accidents & Legal",2025-06,-0.7234,47
+safety_legal,"Site Safety, Accidents & Legal",2025-07,-0.6226,53
+safety_legal,"Site Safety, Accidents & Legal",2025-08,-0.5,38
+safety_legal,"Site Safety, Accidents & Legal",2025-09,-0.5882,34
+safety_legal,"Site Safety, Accidents & Legal",2025-10,-0.5278,36
+safety_legal,"Site Safety, Accidents & Legal",2025-11,-0.5556,54
+safety_legal,"Site Safety, Accidents & Legal",2025-12,-0.6538,52
+safety_legal,"Site Safety, Accidents & Legal",2026-01,-0.6923,39
+safety_legal,"Site Safety, Accidents & Legal",2026-02,-0.5614,57
+safety_legal,"Site Safety, Accidents & Legal",2026-03,-0.6441,59
+safety_legal,"Site Safety, Accidents & Legal",2026-04,-0.7045,44
+safety_legal,"Site Safety, Accidents & Legal",2026-05,-0.625,56
+safety_legal,"Site Safety, Accidents & Legal",2026-06,-0.7619,63
+safety_legal,"Site Safety, Accidents & Legal",2026-07,-0.6737,95
+safety_legal,"Site Safety, Accidents & Legal",2026-08,-0.625,16
+housing_credit,Housing Finance / Credit,2024-08,0.1124,89
+housing_credit,Housing Finance / Credit,2024-09,0.3186,204
+housing_credit,Housing Finance / Credit,2024-10,0.3562,73
+housing_credit,Housing Finance / Credit,2024-11,0.2391,46
+housing_credit,Housing Finance / Credit,2024-12,0.3077,39
+housing_credit,Housing Finance / Credit,2025-01,0.25,60
+housing_credit,Housing Finance / Credit,2025-02,0.125,40
+housing_credit,Housing Finance / Credit,2025-03,0.4286,28
+housing_credit,Housing Finance / Credit,2025-04,0.4444,45
+housing_credit,Housing Finance / Credit,2025-05,0.209,67
+housing_credit,Housing Finance / Credit,2025-06,0.1538,26
+housing_credit,Housing Finance / Credit,2025-07,0.5439,57
+housing_credit,Housing Finance / Credit,2025-08,0.1034,58
+housing_credit,Housing Finance / Credit,2025-09,0.1429,21
+housing_credit,Housing Finance / Credit,2025-10,0.4872,39
+housing_credit,Housing Finance / Credit,2025-11,0.2353,51
+housing_credit,Housing Finance / Credit,2025-12,-0.1786,28
+housing_credit,Housing Finance / Credit,2026-01,0.3793,29
+housing_credit,Housing Finance / Credit,2026-02,0.2045,44
+housing_credit,Housing Finance / Credit,2026-03,0.375,16
+housing_credit,Housing Finance / Credit,2026-04,0.6522,46
+housing_credit,Housing Finance / Credit,2026-05,0.3913,46
+housing_credit,Housing Finance / Credit,2026-06,0.5652,23
+housing_credit,Housing Finance / Credit,2026-07,0.6154,26
+housing_credit,Housing Finance / Credit,2026-08,0.6667,9
+commercial_datacentre,Commercial RE & Data Centres,2024-08,0.3957,187
+commercial_datacentre,Commercial RE & Data Centres,2024-09,0.3412,85
+commercial_datacentre,Commercial RE & Data Centres,2024-10,0.4898,49
+commercial_datacentre,Commercial RE & Data Centres,2024-11,0.3396,53
+commercial_datacentre,Commercial RE & Data Centres,2024-12,0.675,40
+commercial_datacentre,Commercial RE & Data Centres,2025-01,0.4792,48
+commercial_datacentre,Commercial RE & Data Centres,2025-02,0.3333,24
+commercial_datacentre,Commercial RE & Data Centres,2025-03,0.46,50
+commercial_datacentre,Commercial RE & Data Centres,2025-04,0.3409,44
+commercial_datacentre,Commercial RE & Data Centres,2025-05,0.0789,38
+commercial_datacentre,Commercial RE & Data Centres,2025-06,0.1538,39
+commercial_datacentre,Commercial RE & Data Centres,2025-07,0.3611,36
+commercial_datacentre,Commercial RE & Data Centres,2025-08,0.3438,32
+commercial_datacentre,Commercial RE & Data Centres,2025-09,0.28,25
+commercial_datacentre,Commercial RE & Data Centres,2025-10,0.25,48
+commercial_datacentre,Commercial RE & Data Centres,2025-11,0.3333,39
+commercial_datacentre,Commercial RE & Data Centres,2025-12,0.3704,27
+commercial_datacentre,Commercial RE & Data Centres,2026-01,0.2917,24
+commercial_datacentre,Commercial RE & Data Centres,2026-02,0.4133,75
+commercial_datacentre,Commercial RE & Data Centres,2026-03,0.0455,22
+commercial_datacentre,Commercial RE & Data Centres,2026-04,0.4386,57
+commercial_datacentre,Commercial RE & Data Centres,2026-05,0.5,50
+commercial_datacentre,Commercial RE & Data Centres,2026-06,0.3103,58
+commercial_datacentre,Commercial RE & Data Centres,2026-07,0.4634,41
+commercial_datacentre,Commercial RE & Data Centres,2026-08,0.5714,14
+epc_orders,EPC / Orders / Contracts,2024-08,0.32,50
+epc_orders,EPC / Orders / Contracts,2024-09,0.625,40
+epc_orders,EPC / Orders / Contracts,2024-10,0.1746,63
+epc_orders,EPC / Orders / Contracts,2024-11,0.6444,45
+epc_orders,EPC / Orders / Contracts,2024-12,0.3721,43
+epc_orders,EPC / Orders / Contracts,2025-01,0.4595,37
+epc_orders,EPC / Orders / Contracts,2025-02,0.3243,37
+epc_orders,EPC / Orders / Contracts,2025-03,0.5484,31
+epc_orders,EPC / Orders / Contracts,2025-04,0.5455,44
+epc_orders,EPC / Orders / Contracts,2025-05,0.1765,34
+epc_orders,EPC / Orders / Contracts,2025-06,0.675,40
+epc_orders,EPC / Orders / Contracts,2025-07,0.5789,38
+epc_orders,EPC / Orders / Contracts,2025-08,0.62,50
+epc_orders,EPC / Orders / Contracts,2025-09,0.625,40
+epc_orders,EPC / Orders / Contracts,2025-10,0.5405,37
+epc_orders,EPC / Orders / Contracts,2025-11,0.3478,46
+epc_orders,EPC / Orders / Contracts,2025-12,0.5962,52
+epc_orders,EPC / Orders / Contracts,2026-01,0.3878,49
+epc_orders,EPC / Orders / Contracts,2026-02,0.3902,41
+epc_orders,EPC / Orders / Contracts,2026-03,0.5161,31
+epc_orders,EPC / Orders / Contracts,2026-04,0.4667,45
+epc_orders,EPC / Orders / Contracts,2026-05,0.381,63
+epc_orders,EPC / Orders / Contracts,2026-06,0.6705,88
+epc_orders,EPC / Orders / Contracts,2026-07,0.6296,135
+epc_orders,EPC / Orders / Contracts,2026-08,1.0,8
+sector_macro,Construction Industry (macro),2024-08,0.4512,82
+sector_macro,Construction Industry (macro),2024-09,0.3478,46
+sector_macro,Construction Industry (macro),2024-10,0.4737,38
+sector_macro,Construction Industry (macro),2024-11,0.4516,31
+sector_macro,Construction Industry (macro),2024-12,0.1702,47
+sector_macro,Construction Industry (macro),2025-01,0.3214,28
+sector_macro,Construction Industry (macro),2025-02,0.4118,34
+sector_macro,Construction Industry (macro),2025-03,0.3913,23
+sector_macro,Construction Industry (macro),2025-04,0.3514,37
+sector_macro,Construction Industry (macro),2025-05,0.2703,37
+sector_macro,Construction Industry (macro),2025-06,0.5526,38
+sector_macro,Construction Industry (macro),2025-07,0.4857,35
+sector_macro,Construction Industry (macro),2025-08,0.3158,38
+sector_macro,Construction Industry (macro),2025-09,0.4062,32
+sector_macro,Construction Industry (macro),2025-10,0.5,34
+sector_macro,Construction Industry (macro),2025-11,0.5,18
+sector_macro,Construction Industry (macro),2025-12,0.6667,27
+sector_macro,Construction Industry (macro),2026-01,0.3721,43
+sector_macro,Construction Industry (macro),2026-02,0.3443,61
+sector_macro,Construction Industry (macro),2026-03,0.44,25
+sector_macro,Construction Industry (macro),2026-04,0.1707,41
+sector_macro,Construction Industry (macro),2026-05,0.451,51
+sector_macro,Construction Industry (macro),2026-06,0.2419,62
+sector_macro,Construction Industry (macro),2026-07,0.4342,76
+sector_macro,Construction Industry (macro),2026-08,0.4,5
+airports_ports,Airports & Ports,2024-08,0.3194,72
+airports_ports,Airports & Ports,2024-09,0.3824,34
+airports_ports,Airports & Ports,2024-10,0.2632,38
+airports_ports,Airports & Ports,2024-11,0.2059,34
+airports_ports,Airports & Ports,2024-12,0.3684,38
+airports_ports,Airports & Ports,2025-01,0.3143,35
+airports_ports,Airports & Ports,2025-02,0.2333,30
+airports_ports,Airports & Ports,2025-03,0.1429,35
+airports_ports,Airports & Ports,2025-04,0.3023,43
+airports_ports,Airports & Ports,2025-05,0.2703,37
+airports_ports,Airports & Ports,2025-06,0.2571,35
+airports_ports,Airports & Ports,2025-07,0.2368,38
+airports_ports,Airports & Ports,2025-08,0.6,40
+airports_ports,Airports & Ports,2025-09,0.3143,35
+airports_ports,Airports & Ports,2025-10,0.4737,57
+airports_ports,Airports & Ports,2025-11,0.5588,34
+airports_ports,Airports & Ports,2025-12,0.2778,36
+airports_ports,Airports & Ports,2026-01,0.4,35
+airports_ports,Airports & Ports,2026-02,0.4915,59
+airports_ports,Airports & Ports,2026-03,0.4286,56
+airports_ports,Airports & Ports,2026-04,0.3,20
+airports_ports,Airports & Ports,2026-05,0.4333,30
+airports_ports,Airports & Ports,2026-06,0.5645,62
+airports_ports,Airports & Ports,2026-07,0.2619,42
+airports_ports,Airports & Ports,2026-08,0.1429,7
+costs_macro,Input Costs & Macro Shocks,2024-08,0.1613,31
+costs_macro,Input Costs & Macro Shocks,2024-09,0.2692,26
+costs_macro,Input Costs & Macro Shocks,2024-10,0.3478,23
+costs_macro,Input Costs & Macro Shocks,2024-11,0.64,25
+costs_macro,Input Costs & Macro Shocks,2024-12,0.6111,18
+costs_macro,Input Costs & Macro Shocks,2025-01,0.0,12
+costs_macro,Input Costs & Macro Shocks,2025-02,0.3077,13
+costs_macro,Input Costs & Macro Shocks,2025-03,0.0455,22
+costs_macro,Input Costs & Macro Shocks,2025-04,0.5625,16
+costs_macro,Input Costs & Macro Shocks,2025-05,-0.1,10
+costs_macro,Input Costs & Macro Shocks,2025-06,0.3333,12
+costs_macro,Input Costs & Macro Shocks,2025-07,0.2308,13
+costs_macro,Input Costs & Macro Shocks,2025-08,0.1429,7
+costs_macro,Input Costs & Macro Shocks,2025-09,0.2381,21
+costs_macro,Input Costs & Macro Shocks,2025-10,0.2,20
+costs_macro,Input Costs & Macro Shocks,2025-11,0.4,15
+costs_macro,Input Costs & Macro Shocks,2025-12,0.5,14
+costs_macro,Input Costs & Macro Shocks,2026-01,0.2727,11
+costs_macro,Input Costs & Macro Shocks,2026-02,0.44,25
+costs_macro,Input Costs & Macro Shocks,2026-03,-0.3273,55
+costs_macro,Input Costs & Macro Shocks,2026-04,-0.5238,42
+costs_macro,Input Costs & Macro Shocks,2026-05,-0.0833,24
+costs_macro,Input Costs & Macro Shocks,2026-06,-0.25,40
+costs_macro,Input Costs & Macro Shocks,2026-07,0.3939,33
+costs_macro,Input Costs & Macro Shocks,2026-08,-0.5,4

@@ -1,0 +1,6 @@
+.vercel
+__pycache__/
+*.pyc
+.DS_Store
+._*
+data/embeddings.npy

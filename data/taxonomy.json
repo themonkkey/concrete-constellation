@@ -1,0 +1,119 @@
+{
+  "roads_highways": {
+    "name": "Roads & Highways",
+    "clusters": [
+      45
+    ]
+  },
+  "rail_metro": {
+    "name": "Railways & Metro",
+    "clusters": [
+      44,
+      40,
+      43,
+      42,
+      29,
+      46
+    ]
+  },
+  "airports_ports": {
+    "name": "Airports & Ports",
+    "clusters": [
+      27,
+      16
+    ]
+  },
+  "residential_realty": {
+    "name": "Residential Real Estate",
+    "clusters": [
+      49,
+      37,
+      48,
+      41,
+      21,
+      24,
+      36,
+      20,
+      19,
+      12,
+      38
+    ]
+  },
+  "commercial_datacentre": {
+    "name": "Commercial RE & Data Centres",
+    "clusters": [
+      39,
+      25,
+      51
+    ]
+  },
+  "cement": {
+    "name": "Cement",
+    "clusters": [
+      9,
+      22,
+      23,
+      15,
+      11
+    ]
+  },
+  "epc_orders": {
+    "name": "EPC / Orders / Contracts",
+    "clusters": [
+      31,
+      1
+    ]
+  },
+  "housing_credit": {
+    "name": "Housing Finance / Credit",
+    "clusters": [
+      14,
+      17,
+      18
+    ]
+  },
+  "policy_regulation": {
+    "name": "Policy, Regulation & Schemes",
+    "clusters": [
+      34,
+      47,
+      10,
+      8,
+      32
+    ]
+  },
+  "safety_legal": {
+    "name": "Site Safety, Accidents & Legal",
+    "clusters": [
+      30,
+      35,
+      33
+    ]
+  },
+  "costs_macro": {
+    "name": "Input Costs & Macro Shocks",
+    "clusters": [
+      28,
+      50
+    ]
+  },
+  "sector_macro": {
+    "name": "Construction Industry (macro)",
+    "clusters": [
+      26
+    ]
+  },
+  "_noise_drop": {
+    "name": "Non-signal (drop)",
+    "clusters": [
+      0,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      13
+    ]
+  }
+}
