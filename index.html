@@ -55,6 +55,12 @@
   #npanel .terms span{background:var(--panel2);border:1px solid var(--line);border-radius:4px;padding:1px 6px;margin-right:4px;white-space:nowrap}
   #npanel .close{position:absolute;top:10px;right:12px;background:none;border:0;color:var(--faint);font-size:15px;cursor:pointer}
   .chip{display:inline-block;font-family:var(--mono);font-size:11.5px;border-radius:5px;padding:1px 7px;font-weight:500}
+  #cosmos .mast,#cosmos .legend,#cosmos .hint,#timeDock,#modeSeg,#tuneBtn,#search{
+    transition:opacity .3s ease}
+  #cosmos.immersive .mast,#cosmos.immersive .legend,#cosmos.immersive .hint,
+  #cosmos.immersive #timeDock,#cosmos.immersive #modeSeg,
+  #cosmos.immersive #tuneBtn,#cosmos.immersive #search{opacity:.10}
+  #cosmos.immersive .mast,#cosmos.immersive .legend,#cosmos.immersive .hint{pointer-events:none}
   .hint{position:absolute;bottom:20px;right:24px;z-index:3;font-family:var(--mono);font-size:10.5px;color:var(--faint);pointer-events:none}
 
   /* ---------- observatory ---------- */
@@ -334,6 +340,7 @@ const dustGroups=[];           // {parent, pts:[{rr,a0,spin,net,mi,sz}], key}
     const arr=DATA.dust[key], pts=[];
     const base=parent.r+(key.startsWith('b:')?5:3);
     const spread=0.92*Math.sqrt(arr.length)+3;
+    parent.dustR=base+spread;
     const spin=(Math.random()<.5?-1:1)*(0.00005+Math.random()*0.00008);
     for(let i=0;i<arr.length;i++){
       pts.push({rr:base+spread*Math.sqrt(Math.random()),
@@ -342,6 +349,14 @@ const dustGroups=[];           // {parent, pts:[{rr,a0,spin,net,mi,sz}], key}
     }
     dustGroups.push({parent,pts,key});
   }
+  /* physics must know the DUST footprint, not just the core disc, or packs
+     overlap and labels collide even though the cores are far apart. */
+  nodes.forEach(n=>{n.rEff=Math.max(n.r+3, n.dustR||0);});
+  links.forEach(l=>{
+    l.rest = l.kind==='member'
+      ? l.t.rEff + l.s.rEff*0.55 + 16
+      : l.s.rEff + l.t.rEff + 70 + (1-l.sim)*520;
+  });
 })();
 let dustColors=new Map();      // net10 -> rgba string, rebuilt on retarget
 function rebuildDustColors(){
@@ -358,7 +373,7 @@ rebuildDustColors();
 let beltPts=null;
 function buildBelt(){
   let R=0;nodes.forEach(n=>R=Math.max(R,Math.hypot(n.x,n.y)+n.r));
-  R+=70;beltPts=[];
+  R+=46;beltPts=[];
   const rows=4,per=Math.ceil(DATA.belt/rows);
   const a0=-3.8,a1=0.7;
   for(let i=0;i<DATA.belt;i++){
@@ -486,12 +501,12 @@ function tick(){
     for(let j=i+1;j<nodes.length;j++){const b=nodes[j];
       let dx=b.x-a.x,dy=b.y-a.y,d2=dx*dx+dy*dy;
       if(d2<1)d2=1;const d=Math.sqrt(d2);
-      const f=(a.r*b.r*0.9*P.repel)/d2;
+      const f=(a.rEff*b.rEff*0.85*P.repel)/d2;
       dx/=d;dy/=d;a.vx-=dx*f;a.vy-=dy*f;b.vx+=dx*f;b.vy+=dy*f;}}
   links.forEach(l=>{let dx=l.t.x-l.s.x,dy=l.t.y-l.s.y;
     const d=Math.sqrt(dx*dx+dy*dy)||1,f=(d-l.rest*P.dist)*l.k;
     dx/=d;dy/=d;l.s.vx+=dx*f;l.s.vy+=dy*f;l.t.vx-=dx*f;l.t.vy-=dy*f;});
-  nodes.forEach(n=>{n.vx-=n.x*0.0016*P.center;n.vy-=n.y*0.0022*P.center;
+  nodes.forEach(n=>{n.vx-=n.x*0.0009*P.center;n.vy-=n.y*0.0014*P.center;
     if(n!==dragN){n.vx*=0.82;n.vy*=0.82;
       const sp=Math.hypot(n.vx,n.vy); if(sp>14){n.vx*=14/sp;n.vy*=14/sp;}
       n.x+=n.vx*alpha*2.2;n.y+=n.vy*alpha*2.2;}});
@@ -516,6 +531,23 @@ function stepView(now){
   return !!viewTween;
 }
 
+const panel=document.getElementById('npanel'),tunePanel=document.getElementById('tunePanel');
+/* Obsidian fades its chrome the moment you start working the graph, and brings
+   it back when you stop. Hover alone must NOT trigger it, or reading a tooltip
+   would hide the legend that explains it. */
+let immersiveT=null;
+function immersive(on){
+  if(REDUCED)return;
+  if(on){
+    if(!panel.style.display||panel.style.display==='none'){
+      if(!tunePanel.classList.contains('open'))wrap.classList.add('immersive');
+    }
+    clearTimeout(immersiveT);
+  }else{
+    clearTimeout(immersiveT);
+    immersiveT=setTimeout(()=>wrap.classList.remove('immersive'),1400);
+  }
+}
 let hoverN=null,pinN=null,searchQ='',matchSet=null;
 function match(n){return !searchQ||matchSet.has(n.id)}
 function rebuildMatches(){
@@ -595,7 +627,7 @@ function draw(){
       ctx.beginPath();ctx.arc(x,y,r+2,0,7);ctx.stroke();}
     if(n===focus){ctx.strokeStyle='rgba(230,228,240,.9)';ctx.lineWidth=1.5;
       ctx.beginPath();ctx.arc(x,y,r+4,0,7);ctx.stroke();}
-    let labA=0;                                        // labels: halo + graded fade
+    let labA=0;                                        // labels: halo, graded fade, collision slots
     if(n.kind==='bucket')labA=0.95*dim;
     else{
       labA=Math.max(0,Math.min(1,(scale-P.textFade)/0.35))*0.9*dim;
@@ -605,15 +637,18 @@ function draw(){
       ctx.font=(n.kind==='bucket'?'500 11.5px':'400 10px')+" 'IBM Plex Sans',sans-serif";
       ctx.textAlign='center';ctx.lineJoin='round';ctx.lineWidth=3;
       const tw=ctx.measureText(n.label).width, lh=12;
-      let ly=y+r+13;                                   // greedy collision: flip above
-      if(n.kind==='bucket'){
-        const fits=b=>!labelRects.some(q=>!(x+tw/2<q.x0||x-tw/2>q.x1||b+2<q.y0||b-lh>q.y1));
-        if(!fits(ly)&&fits(y-r-6))ly=y-r-6;
-        labelRects.push({x0:x-tw/2,x1:x+tw/2,y0:ly-lh,y1:ly+2});}
+      const off=r+10+tw/2;
+      const slots=[[0,r+13],[0,-r-7],[off,5],[-off,5],[0,r+27],[0,-r-21],[off,-r-4],[-off,-r-4]];
+      const fits=s=>!labelRects.some(q=>!(x+s[0]+tw/2+3<q.x0||x+s[0]-tw/2-3>q.x1
+        ||y+s[1]+3<q.y0||y+s[1]-lh>q.y1));
+      const slot=slots.find(fits)||slots[0];
+      if(!slots.some(fits)&&n.kind!=='bucket')labA=0;
+      const lx=x+slot[0], ly=y+slot[1];
+      if(labA>0.03)labelRects.push({x0:lx-tw/2,x1:lx+tw/2,y0:ly-lh,y1:ly+3});
       ctx.strokeStyle=`rgba(16,16,20,${0.85*labA})`;
-      ctx.strokeText(n.label,x,ly);
+      if(labA>0.03){ctx.strokeStyle=`rgba(16,16,20,${0.9*labA})`;ctx.strokeText(n.label,lx,ly);}
       ctx.fillStyle=n.kind==='bucket'?`rgba(230,228,240,${labA})`:`rgba(155,152,176,${labA})`;
-      ctx.fillText(n.label,x,ly);}
+      if(labA>0.03)ctx.fillText(n.label,lx,ly);}
   });
 }
 
@@ -629,12 +664,13 @@ function fitView(){
   nodes.forEach(n=>ext=Math.max(ext,Math.hypot(n.x,n.y)+n.r));
   dustGroups.forEach(g=>{const p=g.parent,spread=g.pts.length?g.pts[g.pts.length-1].rr:0;
     ext=Math.max(ext,Math.hypot(p.x,p.y)+spread);});
-  if(beltPts)beltPts.forEach(b=>ext=Math.max(ext,b.r));
-  scale=Math.min(1.6,Math.min((W-60)/(2*ext),(H-150)/(2*ext)));
-  tx=0;ty=-14;
+  ext*=1.06;   // breathing room; the belt may run off-frame, it is decorative
+  const leftGutter=W>1024?200:0;                 // the mast column
+  scale=Math.min(1.6,Math.min((W-leftGutter-70)/(2*ext),(H-160)/(2*ext)));
+  tx=leftGutter/2;ty=-18;
 }
-if(REDUCED){for(let i=0;i<420;i++)tick();buildBelt();fitView();draw();}
-else{for(let i=0;i<220;i++)tick();buildBelt();fitView();requestAnimationFrame(loop);}
+if(REDUCED){for(let i=0;i<650;i++)tick();buildBelt();fitView();draw();}
+else{for(let i=0;i<520;i++)tick();buildBelt();fitView();requestAnimationFrame(loop);}
 
 /* ---- pointer interaction (drag / pan / pinch) ---- */
 const tip=document.getElementById('gtip');
@@ -657,6 +693,7 @@ cv.addEventListener('pointermove',e=>{
     pinchD=d;draw();return;}
   if(dragN){const [wx,wy]=toWorld(mx,my);dragN.x=wx;dragN.y=wy;dragN.vx=dragN.vy=0;alpha=Math.max(alpha,0.3);moved=true;if(REDUCED){tick();draw();}return;}
   if(panning){tx+=mx-px;ty+=my-py;px=mx;py=my;moved=true;draw();return;}
+  immersive(true);
   const n=pick(mx,my);
   if(n!==hoverN){hoverN=n;if(REDUCED)draw();}
   if(n){tip.style.display='block';
@@ -669,7 +706,7 @@ cv.addEventListener('pointerdown',e=>{
   const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
   ptrs.set(e.pointerId,[mx,my]);
   if(ptrs.size===2){dragN=null;panning=false;pinchD=0;return;}
-  moved=false;const n=pick(mx,my);
+  moved=false;immersive(true);const n=pick(mx,my);
   if(n){dragN=n;}else{panning=true;px=mx;py=my;cv.classList.add('dragging');}
   cv.setPointerCapture(e.pointerId);
 });
@@ -678,15 +715,16 @@ cv.addEventListener('pointerup',e=>{
   const r=cv.getBoundingClientRect();
   if(!moved&&ptrs.size===0){const n=pick(e.clientX-r.left,e.clientY-r.top);
     if(n)openPanel(n);else{pinN=null;panel.style.display='none';}}
-  dragN=null;panning=false;cv.classList.remove('dragging');draw();
+  dragN=null;panning=false;cv.classList.remove('dragging');immersive(false);draw();
 });
 cv.addEventListener('pointercancel',e=>{ptrs.delete(e.pointerId);pinchD=0;dragN=null;panning=false;});
-cv.addEventListener('wheel',e=>{e.preventDefault();
+cv.addEventListener('wheel',e=>{e.preventDefault();immersive(true);immersive(false);
   const r=cv.getBoundingClientRect(),mx=e.clientX-r.left,my=e.clientY-r.top;
   const f=Math.exp(-e.deltaY*0.0012),ns=Math.min(4,Math.max(0.35,scale*f));
   tx=mx-W/2-(mx-W/2-tx)*(ns/scale);ty=my-H/2-(my-H/2-ty)*(ns/scale);
   scale=ns;draw();},{passive:false});
-cv.addEventListener('pointerleave',()=>{hoverN=null;tip.style.display='none';draw();});
+cv.addEventListener('pointerleave',()=>{hoverN=null;tip.style.display='none';
+  clearTimeout(immersiveT);wrap.classList.remove('immersive');draw();});
 
 /* ---- tooltip content (encoding spec: identity, size, colour value, one caveat) ---- */
 function fmtRGB(v){return rgba(healthRGB(v),1)}
@@ -713,11 +751,12 @@ function tipHTML(n){
 }
 
 /* ---- detail panel v2 ---- */
-const panel=document.getElementById('npanel'),npb=document.getElementById('npbody');
+const npb=document.getElementById('npbody');
 panel.querySelector('.close').onclick=()=>{pinN=null;panel.style.display='none';draw();};
 const TOTAL=DATA.buckets.reduce((s,b)=>s+b.n,0);
 function chipFor(v){return `<span class="chip" style="background:${rgba(healthRGB(v),0.18)};color:${fmtRGB(v)}">${fmt(v)}</span>`}
 function openPanel(n){pinN=n;
+  clearTimeout(immersiveT);wrap.classList.remove('immersive');
   document.getElementById('tunePanel').classList.remove('open');
   document.getElementById('tuneBtn').classList.remove('on');
   let monthRow='';
@@ -763,8 +802,9 @@ function setMode(m){
 seg.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.mode));
 
 /* ---- tune panel ---- */
-const tuneBtn=document.getElementById('tuneBtn'),tunePanel=document.getElementById('tunePanel');
+const tuneBtn=document.getElementById('tuneBtn');
 tuneBtn.onclick=()=>{
+  clearTimeout(immersiveT);wrap.classList.remove('immersive');
   const open=tunePanel.classList.toggle('open');
   tuneBtn.classList.toggle('on',open);
   if(open){pinN=null;panel.style.display='none';draw();}
