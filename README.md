@@ -63,3 +63,24 @@ investor sentiment, not whether anything is being built. Housing finance was
 kept, since mortgage credit is real construction demand.
 
 Pahlé India Foundation.
+
+## 3D version
+
+`3d.html` is a separate page (live at `/3d`) rendering the same data as a volume
+in space: 3D force layout, perspective projection, a real starfield that
+parallaxes, and every article as an individual mote on a spherical shell around
+its cluster.
+
+Build it with `python3 build3d.py` after editing `3d.src.html` — the source
+carries a `__DATA__` placeholder and the build injects the payload from
+`index.html`, so both pages always show the same numbers.
+
+**Hand control** (that page only) uses MediaPipe Hands via jsdelivr and the
+webcam. All inference is local; no frames leave the browser and nothing is
+recorded. It is opt-in behind a button, runs at ~18fps, and stops when the tab
+is hidden. Gestures: open palm orbits, pinch on a node picks it up, holding the
+pinch drags it in 3D, two hands apart zoom, two pinches spreading expand the
+picked cluster, a fist releases.
+
+Performance: motes are batched by colour (one `fillStyle` per colour per frame
+rather than 18,066), which keeps a full-density frame at roughly 6 ms.

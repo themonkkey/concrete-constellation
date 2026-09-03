@@ -1,0 +1,674 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Concrete Constellation 3D</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@112,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --void:#05070c; --ink:#e9f0f5; --muted:#9aa6b8; --faint:#6b7688;
+    --accent:#7ee2a8; --accent2:#4fd1a5; --warn:#e8a06a;
+    --panel:rgba(16,20,30,.82); --edge:rgba(255,255,255,.12);
+    --display:'Archivo',system-ui,sans-serif;
+    --body:'IBM Plex Sans',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;margin:0}
+  html,body{height:100%;overflow:hidden}
+  body{background:var(--void);color:var(--ink);font-family:var(--body)}
+  #stage{position:fixed;inset:0}
+  canvas{display:block;width:100%;height:100%;cursor:grab}
+  canvas.grabbing{cursor:grabbing}
+  .mast{position:absolute;top:22px;left:24px;z-index:3;max-width:380px;transition:opacity .3s}
+  .eyebrow{font-family:var(--mono);font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
+  h1{font-family:var(--display);font-weight:800;font-stretch:112%;font-size:34px;line-height:1.02;margin:6px 0 8px}
+  .sub{color:var(--muted);font-size:13px;line-height:1.55}
+  .panel{background:var(--panel);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border:1px solid var(--edge);border-radius:12px}
+  #hud{position:absolute;top:22px;right:24px;z-index:4;width:280px;padding:14px 16px;
+    font-family:var(--mono);font-size:11px;color:var(--muted)}
+  #hud h4{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:13px;color:var(--ink);
+    margin-bottom:8px;letter-spacing:.02em}
+  .grow{display:flex;justify-content:space-between;gap:10px;padding:3px 0;line-height:1.4}
+  .grow b{color:var(--ink);font-weight:500;white-space:nowrap}
+  .grow.on{color:var(--accent)}
+  .grow.on b{color:var(--accent)}
+  #gestureBtn{margin-top:12px;width:100%;background:rgba(126,226,168,.12);border:1px solid var(--accent);
+    color:var(--accent);font-family:var(--mono);font-size:11px;padding:8px;border-radius:8px;cursor:pointer}
+  #gestureBtn:hover{background:rgba(126,226,168,.2)}
+  #gestureBtn.live{background:rgba(232,160,106,.12);border-color:var(--warn);color:var(--warn)}
+  #camwrap{position:absolute;bottom:20px;right:24px;z-index:4;width:200px;display:none}
+  #camwrap.on{display:block}
+  #cam{width:200px;height:150px;border-radius:10px;border:1px solid var(--edge);
+    transform:scaleX(-1);background:#000;object-fit:cover}
+  #handcv{position:absolute;top:0;left:0;width:200px;height:150px;transform:scaleX(-1);pointer-events:none}
+  #gstate{font-family:var(--mono);font-size:10.5px;color:var(--accent);margin-top:6px;text-align:center;
+    min-height:14px}
+  #ctl{position:absolute;bottom:20px;left:24px;z-index:3;padding:12px 16px;display:flex;
+    gap:16px;align-items:center;font-family:var(--mono);font-size:11px;color:var(--muted)}
+  #ctl label{display:flex;flex-direction:column;gap:4px}
+  #ctl output{color:var(--ink)}
+  input[type=range]{-webkit-appearance:none;appearance:none;background:transparent;height:16px;width:110px}
+  input[type=range]::-webkit-slider-runnable-track{height:3px;background:var(--edge);border-radius:2px}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:11px;height:11px;border-radius:50%;
+    background:var(--accent);margin-top:-4px;cursor:pointer}
+  #seg{display:flex;border:1px solid var(--edge);border-radius:8px;overflow:hidden}
+  #seg button{background:none;border:0;color:var(--muted);font-family:var(--mono);font-size:10.5px;
+    padding:6px 10px;cursor:pointer}
+  #seg button.on{background:rgba(255,255,255,.08);color:var(--ink);box-shadow:inset 0 -2px 0 var(--accent)}
+  #tip{position:absolute;z-index:5;pointer-events:none;display:none;max-width:260px;padding:9px 12px;
+    background:var(--panel);border:1px solid var(--edge);border-radius:9px;font-size:12px}
+  #tip .t{font-weight:600;margin-bottom:3px}
+  #tip .m{font-family:var(--mono);font-size:10.5px;color:var(--muted);line-height:1.5}
+  #month{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:3;
+    padding:10px 16px;display:flex;align-items:center;gap:12px}
+  #month b{font-family:var(--display);font-stretch:112%;font-weight:800;font-size:16px;min-width:96px}
+  #month input{width:230px}
+  #month button{background:none;border:1px solid var(--edge);border-radius:6px;color:var(--muted);
+    font-family:var(--mono);font-size:10.5px;padding:4px 8px;cursor:pointer}
+  #month button.on{color:var(--accent);border-color:var(--accent)}
+  @media(max-width:820px){ .mast{max-width:200px} h1{font-size:22px} .sub{display:none}
+    #hud{width:190px;font-size:10px} #ctl{display:none} #month input{width:120px} }
+</style>
+</head>
+<body>
+<div id="stage">
+  <canvas id="cv"></canvas>
+
+  <div class="mast">
+    <div class="eyebrow">Pahl&#233; India Foundation</div>
+    <h1>Concrete Constellation</h1>
+    <div class="sub"><b id="totN">18,066</b> India construction articles as a volume in space.
+      Hubs are themes, satellites are clusters, every mote is one article.</div>
+  </div>
+
+  <div id="hud" class="panel">
+    <h4>Hand control</h4>
+    <div class="grow" data-g="orbit"><span>Open palm, move</span><b>orbit</b></div>
+    <div class="grow" data-g="pinch"><span>Pinch on a node</span><b>pick up</b></div>
+    <div class="grow" data-g="drag"><span>Hold pinch, move</span><b>drag in 3D</b></div>
+    <div class="grow" data-g="zoom"><span>Two hands apart</span><b>zoom</b></div>
+    <div class="grow" data-g="expand"><span>Two pinches, spread</span><b>expand cluster</b></div>
+    <div class="grow" data-g="fist"><span>Fist</span><b>release / lock</b></div>
+    <button id="gestureBtn">enable hand control</button>
+  </div>
+
+  <div id="camwrap">
+    <video id="cam" autoplay playsinline muted></video>
+    <canvas id="handcv" width="200" height="150"></canvas>
+    <div id="gstate"></div>
+  </div>
+
+  <div id="ctl" class="panel">
+    <div id="seg">
+      <button data-mode="health" class="on">Health</button>
+      <button data-mode="bucket">Bucket</button>
+      <button data-mode="structure">Structure</button>
+    </div>
+    <label>motes <output id="oDens">1.00</output>
+      <input type="range" id="sDens" min="0.1" max="1" step="0.05" value="1"></label>
+    <label>spin <output id="oSpin">0.25</output>
+      <input type="range" id="sSpin" min="0" max="1" step="0.05" value="0.25"></label>
+  </div>
+
+  <div id="month" class="panel">
+    <button id="mAll" class="on">&#931; all</button>
+    <b id="mLab">Aug '24 &ndash; Aug '26</b>
+    <input type="range" id="mSlide" min="0" max="24" step="1" value="23">
+  </div>
+
+  <div id="tip"></div>
+</div>
+
+<script>
+const DATA = __DATA__;
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const lerp=(a,b,t)=>a+(b-a)*t;
+const hex2rgb=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
+const fmt=v=>(v>=0?'+':'')+v.toFixed(2);
+const mLabel=m=>{const[y,mo]=m.split('-');
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+mo-1]+" '"+y.slice(2)};
+document.getElementById('totN').textContent=DATA.total.toLocaleString();
+
+/* ============================ ENGINE ============================ */
+const cv=document.getElementById('cv'), ctx=cv.getContext('2d');
+let W,H,DPR;
+function resize(){DPR=Math.min(devicePixelRatio||1,2);W=innerWidth;H=innerHeight;
+  cv.width=W*DPR;cv.height=H*DPR;ctx.setTransform(DPR,0,0,DPR,0,0);}
+resize();addEventListener('resize',resize);
+
+const P={density:1, spin:0.25};
+let colorMode='health', monthIdx=null;
+
+const NEG=[207,110,64], POS=[47,158,139], MID=[120,120,133], STRUCT=[150,155,175];
+const shade=(c,f)=>c.map(x=>Math.min(255,Math.round(x*f)));
+const toward=(c,t,f)=>c.map((x,i)=>Math.round(x+(t[i]-x)*f));
+const lift=c=>toward(shade(c,1.14),[255,255,255],.10);
+const BUCKET_HUE={residential_realty:'#e18888',roads_highways:'#dc9064',epc_orders:'#c99d4e',
+  policy_regulation:'#a9ab54',commercial_datacentre:'#7fb673',rail_metro:'#51bb9a',
+  safety_legal:'#35b9c0',housing_credit:'#50b1dc',costs_macro:'#7ca5e9',
+  airports_ports:'#a498e5',sector_macro:'#c38ecf',cement:'#d887ae'};
+function healthRGB(v){const t=Math.max(-1,Math.min(1,v/0.7));
+  return t<0?toward(MID,NEG,-t):toward(MID,POS,t);}
+
+/* ---- build nodes in 3D ---- */
+const bMap={};DATA.buckets.forEach(b=>bMap[b.id]=b);
+const nodes=[],links=[],nMap={};
+DATA.buckets.forEach((b,i)=>{
+  // fibonacci sphere so hubs start evenly spread in a shell, not a ring
+  const n=DATA.buckets.length, y=1-(i/(n-1))*2, r=Math.sqrt(1-y*y), th=i*2.39996;
+  const R=380;
+  const nd={id:b.id,label:b.name,kind:'bucket',n:b.n,health:b.health,
+    r:0.5*Math.sqrt(b.n), x:Math.cos(th)*r*R, y:y*R*0.72, z:Math.sin(th)*r*R,
+    vx:0,vy:0,vz:0};
+  nodes.push(nd);nMap[b.id]=nd;
+});
+DATA.clusters.forEach(c=>{
+  const p=nMap[c.parent];
+  const a=Math.random()*6.283, b2=Math.acos(2*Math.random()-1), d=p.r+70+Math.random()*70;
+  const nd={id:c.id,label:c.terms[0]||('cluster '+c.cluster),kind:'cluster',
+    n:c.n,health:c.health,terms:c.terms,parent:c.parent, r:0.5*Math.sqrt(c.n),
+    x:p.x+Math.sin(b2)*Math.cos(a)*d, y:p.y+Math.cos(b2)*d, z:p.z+Math.sin(b2)*Math.sin(a)*d,
+    vx:0,vy:0,vz:0};
+  nodes.push(nd);nMap[c.id]=nd;
+  links.push({s:nd,t:p,kind:'member',rest:0,k:0.03});
+});
+DATA.bucket_edges.filter(e=>e.sim>=0.78).forEach(e=>{
+  links.push({s:nMap[e.a],t:nMap[e.b],kind:'sim',sim:e.sim,rest:0,k:0.005});
+});
+const nbr={};nodes.forEach(n=>nbr[n.id]=new Set([n.id]));
+links.forEach(l=>{nbr[l.s.id].add(l.t.id);nbr[l.t.id].add(l.s.id)});
+
+/* ---- motes: one per article, real 3D offsets on a shell ---- */
+const GOLD=2.39996;
+const motes=[];              // {p:parentNode, ox,oy,oz, net, mi, sz}
+(function build(){
+  for(const key in DATA.dust){
+    const parent = key.startsWith('b:') ? nMap[key.slice(2)] : nMap[key];
+    if(!parent) continue;
+    const arr=DATA.dust[key], N=arr.length;
+    const spread = 8 + 3.1*Math.sqrt(N);
+    parent.shell = parent.r + spread;
+    for(let i=0;i<N;i++){
+      // fibonacci sphere + jitter: an even shell, not a lattice
+      const y=1-(i+0.5)/N*2, rr=Math.sqrt(Math.max(0,1-y*y)), th=i*GOLD;
+      const rad=(parent.r+6)+spread*Math.cbrt(0.25+0.75*Math.random());
+      motes.push({p:parent,
+        ox:Math.cos(th)*rr*rad, oy:y*rad, oz:Math.sin(th)*rr*rad,
+        net:arr[i][0]/10, mi:arr[i][1], sz:1});
+    }
+  }
+  nodes.forEach(n=>{n.rEff=Math.max(n.r+8, n.shell||0); n.expand=1; n.expandT=1;});
+  links.forEach(l=>{ l.rest = l.kind==='member'
+    ? l.t.rEff + l.s.rEff*0.5 + 30
+    : l.s.rEff + l.t.rEff + 140 + (1-l.sim)*700; });
+})();
+
+/* colour buckets: one fillStyle per bucket per frame instead of 18k */
+let moteBins=[];
+function rebin(){
+  const bins=new Map();
+  for(const m of motes){
+    let c;
+    if(colorMode==='structure') c=STRUCT;
+    else if(colorMode==='bucket') c=lift(hex2rgb(BUCKET_HUE[m.p.kind==='bucket'?m.p.id:m.p.parent]));
+    else c=lift(healthRGB(m.net));
+    const key=(c[0]<<16)|(c[1]<<8)|c[2];
+    let b=bins.get(key); if(!b){b={c,list:[]};bins.set(key,b)}
+    b.list.push(m);
+  }
+  moteBins=[...bins.values()];
+}
+rebin();
+const byParent=new Map();
+for(const m of motes){ let a=byParent.get(m.p); if(!a){a=[];byParent.set(m.p,a);} a.push(m); }
+
+/* ---- starfield: real 3D, so it parallaxes ---- */
+const stars=[];
+for(let i=0;i<900;i++){
+  const th=Math.random()*6.283, ph=Math.acos(2*Math.random()-1), R=2600+Math.random()*5200;
+  stars.push({x:Math.sin(ph)*Math.cos(th)*R, y:Math.cos(ph)*R, z:Math.sin(ph)*Math.sin(th)*R,
+    a:0.18+Math.random()*0.5});
+}
+/* ---- belt: excluded articles, a ring in the ecliptic plane ---- */
+const belt=[];
+for(let i=0;i<DATA.belt;i++){
+  const a=Math.random()*6.283, R=1150+Math.random()*130;
+  belt.push({x:Math.cos(a)*R, y:(Math.random()-.5)*46, z:Math.sin(a)*R});
+}
+
+/* ---- camera ---- */
+const cam={yaw:0.5, pitch:-0.28, dist:1150, fov:900, tx:0, ty:0, tz:0};
+let camSpin=0;
+function project(px,py,pz){
+  const dx=px-cam.tx, dy=py-cam.ty, dz=pz-cam.tz;
+  const cy=Math.cos(cam.yaw), sy=Math.sin(cam.yaw);
+  const x1=dx*cy+dz*sy, z1=-dx*sy+dz*cy;
+  const cp=Math.cos(cam.pitch), sp=Math.sin(cam.pitch);
+  const y1=dy*cp-z1*sp, z2=dy*sp+z1*cp;
+  const depth=z2+cam.dist;
+  if(depth<60) return null;
+  const k=cam.fov/depth;
+  return {x:W/2+x1*k, y:H/2+y1*k, d:depth, k};
+}
+/* screen delta -> world delta on the camera plane (for dragging) */
+function screenToWorld(dxs,dys,depth){
+  const k=cam.fov/depth, ux=dxs/k, uy=dys/k;
+  const cp=Math.cos(cam.pitch), sp=Math.sin(cam.pitch);
+  const y1=uy*cp, z1=-uy*sp;
+  const cy=Math.cos(cam.yaw), sy=Math.sin(cam.yaw);
+  return {x:ux*cy - z1*sy, y:y1, z:ux*sy + z1*cy};
+}
+
+/* ---- physics ---- */
+let alpha=1, dragN=null;
+function tick(){
+  for(let i=0;i<nodes.length;i++){const a=nodes[i];
+    for(let j=i+1;j<nodes.length;j++){const b=nodes[j];
+      let dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z;
+      let d2=dx*dx+dy*dy+dz*dz; if(d2<1)d2=1;
+      const d=Math.sqrt(d2), f=(a.rEff*b.rEff*0.42)/d2;
+      dx/=d;dy/=d;dz/=d;
+      a.vx-=dx*f;a.vy-=dy*f;a.vz-=dz*f;
+      b.vx+=dx*f;b.vy+=dy*f;b.vz+=dz*f;}}
+  links.forEach(l=>{
+    let dx=l.t.x-l.s.x,dy=l.t.y-l.s.y,dz=l.t.z-l.s.z;
+    const d=Math.sqrt(dx*dx+dy*dy+dz*dz)||1, f=(d-l.rest)*l.k;
+    dx/=d;dy/=d;dz/=d;
+    l.s.vx+=dx*f;l.s.vy+=dy*f;l.s.vz+=dz*f;
+    l.t.vx-=dx*f;l.t.vy-=dy*f;l.t.vz-=dz*f;});
+  nodes.forEach(n=>{
+    n.vx-=n.x*0.0012; n.vy-=n.y*0.0016; n.vz-=n.z*0.0012;
+    if(n===dragN||n===grabbed) return;
+    n.vx*=0.84;n.vy*=0.84;n.vz*=0.84;
+    const sp=Math.hypot(n.vx,n.vy,n.vz); if(sp>16){const s=16/sp;n.vx*=s;n.vy*=s;n.vz*=s;}
+    n.x+=n.vx*alpha*2.2; n.y+=n.vy*alpha*2.2; n.z+=n.vz*alpha*2.2;
+    n.expand += (n.expandT-n.expand)*0.12;
+  });
+  const tx = focusN?focusN.x:0, ty = focusN?focusN.y:0, tz = focusN?focusN.z:0;
+  cam.tx += (tx-cam.tx)*0.055; cam.ty += (ty-cam.ty)*0.055; cam.tz += (tz-cam.tz)*0.055;
+  alpha=Math.max(alpha*0.995,0.05);
+}
+
+/* ---- colour resolution ---- */
+function monthVal(n){
+  const tbl = n.kind==='bucket' ? DATA.series[n.id] : DATA.cluster_series[n.id];
+  const v = tbl && tbl[DATA.months[monthIdx]];
+  return v||null;
+}
+function nodeRGB(n){
+  if(colorMode==='structure') return STRUCT;
+  if(colorMode==='bucket') return lift(hex2rgb(BUCKET_HUE[n.kind==='bucket'?n.id:n.parent]));
+  if(monthIdx===null) return lift(healthRGB(n.health));
+  const v=monthVal(n);
+  if(!v||!v[1]) return MID;
+  if(v[1]>=20) return lift(healthRGB(v[0]));
+  if(v[1]<=5) return MID;
+  return lift(toward(MID,healthRGB(v[0]),(v[1]-5)/15));
+}
+
+/* ---- draw ---- */
+let hoverN=null, grabbed=null, focusN=null;
+function draw(){
+  ctx.clearRect(0,0,W,H);
+  camSpin += REDUCED?0:P.spin*0.0012;
+  const yaw0=cam.yaw; cam.yaw=yaw0+camSpin;
+
+  // stars
+  ctx.globalCompositeOperation='lighter';
+  for(const s of stars){
+    const p=project(s.x,s.y,s.z); if(!p) continue;
+    if(p.x<-20||p.x>W+20||p.y<-20||p.y>H+20) continue;
+    ctx.fillStyle=`rgba(190,205,235,${s.a*Math.min(1,p.k*3)})`;
+    ctx.fillRect(p.x,p.y,1.1,1.1);
+  }
+  // belt
+  ctx.fillStyle='rgba(120,132,160,.30)';
+  const bstep=Math.max(1,Math.round(1/P.density));
+  ctx.globalCompositeOperation='source-over';
+  for(let i=0;i<belt.length;i+=bstep){
+    const p=project(belt[i].x,belt[i].y,belt[i].z); if(!p) continue;
+    ctx.fillRect(p.x,p.y,1.2,1.2);
+  }
+  // motes, batched by colour
+  ctx.globalCompositeOperation='lighter';
+  const step=Math.max(1,Math.round(1/P.density));
+  const showMonth = monthIdx!==null && colorMode==='health';
+  const foc = focusN;
+  const baseA = foc ? .24 : .62;
+  for(const bin of moteBins){
+    const [r,g,b]=bin.c, list=bin.list;
+    ctx.fillStyle=`rgba(${r},${g},${b},${baseA})`;
+    let dim=null;
+    for(let i=0;i<list.length;i+=step){
+      const m=list[i], par=m.p;
+      if(showMonth && m.mi!==monthIdx){
+        if(dim!=='d'){ctx.fillStyle=`rgba(${r},${g},${b},.07)`;dim='d';}
+      }else if(dim!=='n'){ctx.fillStyle=`rgba(${r},${g},${b},${showMonth?1:baseA})`;dim='n';}
+      const e=par.expand;
+      const p=project(par.x+m.ox*e, par.y+m.oy*e, par.z+m.oz*e);
+      if(!p) continue;
+      if(p.x<0||p.x>W||p.y<0||p.y>H) continue;
+      const s=Math.max(.7, p.k*1.5);
+      ctx.fillRect(p.x,p.y,s,s);
+    }
+  }
+  if(foc){
+    const list=byParent.get(foc)||[];
+    for(const m of list){
+      const e=foc.expand;
+      const p=project(foc.x+m.ox*e, foc.y+m.oy*e, foc.z+m.oz*e);
+      if(!p||p.x<0||p.x>W||p.y<0||p.y>H) continue;
+      if(showMonth && m.mi!==monthIdx) continue;
+      const c = colorMode==='structure' ? STRUCT
+              : colorMode==='bucket' ? lift(hex2rgb(BUCKET_HUE[foc.kind==='bucket'?foc.id:foc.parent]))
+              : lift(healthRGB(m.net));
+      ctx.fillStyle=`rgba(${c[0]},${c[1]},${c[2]},.95)`;
+      const s=Math.max(1, p.k*2.0);
+      ctx.fillRect(p.x,p.y,s,s);
+    }
+  }
+  ctx.globalCompositeOperation='source-over';
+
+  // edges
+  const act = (hoverN||focusN) ? nbr[(hoverN||focusN).id] : null;
+  for(const l of links){
+    const a=project(l.s.x,l.s.y,l.s.z), b=project(l.t.x,l.t.y,l.t.z);
+    if(!a||!b) continue;
+    let al = l.kind==='sim' ? Math.min(.5,.18+(l.sim-.78)/.11*.32) : .2;
+    if(act && !(act.has(l.s.id)&&act.has(l.t.id))) al=.04;
+    ctx.setLineDash(l.kind==='sim'?[3,5]:[]);
+    ctx.strokeStyle = l.kind==='sim' ? `rgba(168,139,250,${al})` : `rgba(120,132,160,${al})`;
+    ctx.lineWidth = l.kind==='sim' ? 1 : .8;
+    ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke();
+  }
+  ctx.setLineDash([]);
+
+  // nodes, painter's algorithm
+  const vis=[];
+  for(const n of nodes){
+    const p=project(n.x,n.y,n.z); if(!p) continue;
+    n._p=p; vis.push(n);
+  }
+  vis.sort((a,b)=>b._p.d-a._p.d);
+  for(const n of vis){
+    const p=n._p, rad=Math.max(1.2, n.r*p.k*1.25);
+    let dim=1;
+    if(act && !act.has(n.id)) dim=.16;
+    const c=n.cur||(n.cur=nodeRGB(n));
+    const fog=Math.max(.35,Math.min(1,1600/p.d));
+    // glow
+    if(rad>3){
+      ctx.globalCompositeOperation='lighter';
+      const g=ctx.createRadialGradient(p.x,p.y,rad*.3,p.x,p.y,rad*2.9);
+      g.addColorStop(0,`rgba(${c[0]},${c[1]},${c[2]},${.30*dim*fog})`);
+      g.addColorStop(1,'rgba(0,0,0,0)');
+      ctx.fillStyle=g;ctx.beginPath();ctx.arc(p.x,p.y,rad*2.9,0,7);ctx.fill();
+      ctx.globalCompositeOperation='source-over';
+    }
+    const body=ctx.createRadialGradient(p.x-rad*.3,p.y-rad*.32,rad*.1,p.x,p.y,rad);
+    body.addColorStop(0,`rgba(${toward(c,[255,255,255],.32).join(',')},${dim*fog})`);
+    body.addColorStop(.62,`rgba(${c.join(',')},${dim*fog})`);
+    body.addColorStop(1,`rgba(${shade(c,.6).join(',')},${dim*fog})`);
+    ctx.fillStyle=body;ctx.beginPath();ctx.arc(p.x,p.y,rad,0,7);ctx.fill();
+    ctx.strokeStyle=`rgba(${shade(c,.45).join(',')},${.85*dim})`;
+    ctx.lineWidth=Math.max(.7,rad*.07);
+    ctx.beginPath();ctx.arc(p.x,p.y,rad,0,7);ctx.stroke();
+    if(n.kind==='bucket'){
+      ctx.strokeStyle=`rgba(233,240,245,${.5*dim})`;ctx.lineWidth=1.2;
+      ctx.beginPath();ctx.arc(p.x,p.y,rad+2.5,0,7);ctx.stroke();
+    }
+    if(n===grabbed||n===focusN){
+      ctx.strokeStyle='rgba(126,226,168,.95)';ctx.lineWidth=1.8;
+      ctx.beginPath();ctx.arc(p.x,p.y,rad+6,0,7);ctx.stroke();
+    }
+    if(n.kind==='bucket'&&dim>.3&&rad>4){
+      ctx.font="500 11.5px 'IBM Plex Sans',sans-serif";ctx.textAlign='center';
+      ctx.lineJoin='round';ctx.lineWidth=3;ctx.strokeStyle=`rgba(5,7,12,${.85*dim})`;
+      ctx.strokeText(n.label,p.x,p.y+rad+14);
+      ctx.fillStyle=`rgba(233,240,245,${.92*dim})`;ctx.fillText(n.label,p.x,p.y+rad+14);
+    }
+  }
+  cam.yaw=yaw0;
+  if(handOn) drawHandOverlay();
+}
+function loop(){ tick(); draw(); requestAnimationFrame(loop); }
+for(let i=0;i<300;i++) tick();
+requestAnimationFrame(loop);
+
+/* ---- picking: nearest node to a screen point, nearest-to-camera wins ties ---- */
+function pickAt(sx,sy,tol=26){
+  let best=null,bd=1e9;
+  for(const n of nodes){
+    const p=n._p; if(!p) continue;
+    const rad=Math.max(3,n.r*p.k*1.25);
+    const d=Math.hypot(p.x-sx,p.y-sy);
+    if(d<rad+tol){ const score=d-rad; if(score<bd){bd=score;best=n;} }
+  }
+  return best;
+}
+
+/* ---- mouse ---- */
+const tip=document.getElementById('tip');
+let md=false,lx=0,ly=0,moved=false;
+cv.addEventListener('pointerdown',e=>{
+  md=true;moved=false;lx=e.clientX;ly=e.clientY;cv.classList.add('grabbing');
+  const n=pickAt(e.clientX,e.clientY);
+  if(n){dragN=n;}
+});
+cv.addEventListener('pointermove',e=>{
+  if(md){
+    const dx=e.clientX-lx, dy=e.clientY-ly; lx=e.clientX;ly=e.clientY;
+    if(Math.abs(dx)+Math.abs(dy)>1) moved=true;
+    if(dragN){
+      const w=screenToWorld(dx,dy,dragN._p?dragN._p.d:cam.dist);
+      dragN.x+=w.x;dragN.y+=w.y;dragN.z+=w.z;
+      dragN.vx=dragN.vy=dragN.vz=0; alpha=Math.max(alpha,.4);
+    }else{
+      cam.yaw-=dx*0.005; cam.pitch=Math.max(-1.4,Math.min(1.4,cam.pitch-dy*0.005));
+    }
+    return;
+  }
+  const n=pickAt(e.clientX,e.clientY);
+  hoverN=n;
+  if(n){
+    tip.style.display='block';
+    tip.style.left=Math.min(e.clientX+16,W-280)+'px';
+    tip.style.top=(e.clientY+14)+'px';
+    tip.innerHTML=tipHTML(n);
+  } else tip.style.display='none';
+});
+addEventListener('pointerup',()=>{
+  if(md&&!moved&&hoverN){
+    if(focusN===hoverN){focusN.expandT=1;focusN=null;}
+    else{ if(focusN)focusN.expandT=1; focusN=hoverN; focusN.expandT=1.9; }
+  }
+  md=false;dragN=null;cv.classList.remove('grabbing');
+});
+cv.addEventListener('wheel',e=>{e.preventDefault();
+  cam.dist=Math.max(260,Math.min(5200,cam.dist*Math.exp(e.deltaY*0.0012)));},{passive:false});
+
+function tipHTML(n){
+  const cls = n.kind==='bucket'
+    ? `bucket &middot; ${n.n.toLocaleString()} articles`
+    : `cluster in ${bMap[n.parent].name} &middot; ${n.n.toLocaleString()} articles`;
+  let val;
+  if(monthIdx===null||colorMode!=='health'){
+    val=`health <b style="color:rgb(${healthRGB(n.health).join(',')})">${fmt(n.health)}</b> avg`;
+  }else{
+    const v=monthVal(n);
+    val = (!v||!v[1]) ? 'no articles this month'
+      : `${mLabel(DATA.months[monthIdx])} <b style="color:rgb(${healthRGB(v[0]).join(',')})">${fmt(v[0])}</b> &middot; n=${v[1]}`;
+  }
+  return `<div class="t">${n.label}</div><div class="m">${cls}</div><div class="m">${val}</div>`;
+}
+
+/* ---- controls ---- */
+document.querySelectorAll('#seg button').forEach(b=>b.onclick=()=>{
+  document.querySelectorAll('#seg button').forEach(x=>x.classList.toggle('on',x===b));
+  colorMode=b.dataset.mode; nodes.forEach(n=>n.cur=null); rebin();
+});
+const sD=document.getElementById('sDens');
+sD.oninput=()=>{P.density=+sD.value;document.getElementById('oDens').textContent=(+sD.value).toFixed(2)};
+const sS=document.getElementById('sSpin');
+sS.oninput=()=>{P.spin=+sS.value;document.getElementById('oSpin').textContent=(+sS.value).toFixed(2)};
+
+const mSlide=document.getElementById('mSlide'), mLab=document.getElementById('mLab'),
+      mAll=document.getElementById('mAll');
+function setMonth(i){
+  monthIdx=i; nodes.forEach(n=>n.cur=null);
+  mAll.classList.toggle('on', i===null);
+  mLab.textContent = i===null ? "Aug '24 – Aug '26" : mLabel(DATA.months[i]);
+}
+mSlide.oninput=()=>setMonth(+mSlide.value);
+mAll.onclick=()=>setMonth(null);
+
+/* ============================ HAND CONTROL ============================ */
+const btn=document.getElementById('gestureBtn'), camEl=document.getElementById('cam'),
+      camWrap=document.getElementById('camwrap'), gstate=document.getElementById('gstate'),
+      handcv=document.getElementById('handcv'), hctx=handcv.getContext('2d');
+let handOn=false, landmarker=null, lastHands=[], rafHand=null;
+
+/* one-euro-ish smoothing: raw landmarks jitter enough to feel broken */
+function makeEMA(a=0.35){let v=null;return x=>{if(x==null)return v;v=(v==null)?x:v+(x-v)*a;return v};}
+const smooth={yaw:makeEMA(.28),pitch:makeEMA(.28),zoom:makeEMA(.22),
+              px:makeEMA(.4),py:makeEMA(.4),spread:makeEMA(.25)};
+
+function handMetrics(lm){
+  const d=(a,b)=>Math.hypot(lm[a].x-lm[b].x, lm[a].y-lm[b].y, (lm[a].z-lm[b].z)*.5);
+  const size=d(0,9)||1e-6;                       // wrist -> middle MCP normalises for distance
+  const pinch=d(4,8)/size;                        // thumb tip <-> index tip
+  const up=[[8,6],[12,10],[16,14],[20,18]].filter(([t,p])=>lm[t].y<lm[p].y).length;
+  const thumbOut=d(4,17)/size>0.9;
+  return {size, pinch, up, thumbOut,
+          cx:lm[9].x, cy:lm[9].y, cz:lm[9].z,
+          px:(lm[4].x+lm[8].x)/2, py:(lm[4].y+lm[8].y)/2};
+}
+function classify(m){
+  if(m.pinch<0.34) return 'pinch';
+  if(m.up<=0) return 'fist';
+  if(m.up>=3) return 'palm';
+  return 'idle';
+}
+
+let gPrev=null, gGrab=null, gExpandBase=null;
+function applyGestures(hands){
+  const hs=hands.map(h=>({m:handMetrics(h), g:null}));
+  hs.forEach(h=>h.g=classify(h.m));
+  let label='';
+
+  if(hs.length===2 && hs[0].g==='pinch' && hs[1].g==='pinch'){
+    const dx=hs[0].m.px-hs[1].m.px, dy=hs[0].m.py-hs[1].m.py;
+    const sp=smooth.spread(Math.hypot(dx,dy));
+    if(focusN){                                   // spread with a node focused = expand it
+      if(gExpandBase==null) gExpandBase=sp;
+      focusN.expandT=Math.max(1,Math.min(3.0, 1+(sp-gExpandBase)*6));
+      label=`expand ${focusN.label.slice(0,16)} ×${focusN.expandT.toFixed(1)}`;
+    }else{                                        // otherwise dolly
+      if(gPrev&&gPrev.sp!=null) cam.dist=Math.max(260,Math.min(5200,cam.dist*(1-(sp-gPrev.sp)*2.6)));
+      label='zoom';
+    }
+    gPrev={sp};
+  }
+  else if(hs.length>=1 && hs[0].g==='pinch'){
+    const h=hs[0];
+    const sx=(1-h.m.px)*W, sy=h.m.py*H;
+    if(!gGrab){
+      const n=pickAt(sx,sy,44);
+      if(n){gGrab=n; focusN=n; grabbed=n;}
+    }
+    if(gGrab){
+      const p=gGrab._p;
+      if(p){
+        const w=screenToWorld(sx-p.x, sy-p.y, p.d);
+        gGrab.x+=w.x*0.35; gGrab.y+=w.y*0.35; gGrab.z+=w.z*0.35;
+        // hand z pushes the node away / pulls it closer
+        gGrab.z += (h.m.cz||0)*-140*0.06;
+        gGrab.vx=gGrab.vy=gGrab.vz=0; alpha=Math.max(alpha,.35);
+      }
+      label=`hold ${gGrab.label.slice(0,18)}`;
+    } else label='pinch (no target)';
+    gExpandBase=null;
+  }
+  else if(hs.length>=1 && hs[0].g==='palm'){
+    const h=hs[0], px=smooth.px(h.m.cx), py=smooth.py(h.m.cy);
+    if(gPrev&&gPrev.px!=null){
+      cam.yaw   += (px-gPrev.px)*5.2;
+      cam.pitch  = Math.max(-1.4,Math.min(1.4, cam.pitch+(py-gPrev.py)*4.4));
+    }
+    gPrev={px,py}; gGrab=null; grabbed=null; gExpandBase=null; label='orbit';
+  }
+  else if(hs.length>=1 && hs[0].g==='fist'){
+    gGrab=null; grabbed=null; gPrev=null; gExpandBase=null; label='locked';
+  }
+  else { gPrev=null; gGrab=null; grabbed=null; gExpandBase=null; }
+
+  gstate.textContent=label;
+  document.querySelectorAll('.grow').forEach(r=>r.classList.remove('on'));
+  const map={orbit:'orbit',zoom:'zoom',locked:'fist'};
+  let key = label.startsWith('hold')?'drag' : label.startsWith('expand')?'expand'
+          : label.startsWith('pinch')?'pinch' : map[label];
+  if(key){const el=document.querySelector(`.grow[data-g="${key}"]`); if(el)el.classList.add('on');}
+}
+
+function drawHandOverlay(){
+  hctx.clearRect(0,0,200,150);
+  for(const lm of lastHands){
+    hctx.strokeStyle='rgba(126,226,168,.85)';hctx.lineWidth=1.4;
+    const B=[[0,1,2,3,4],[0,5,6,7,8],[0,9,10,11,12],[0,13,14,15,16],[0,17,18,19,20]];
+    for(const chain of B){
+      hctx.beginPath();
+      chain.forEach((i,k)=>{const p=lm[i];k?hctx.lineTo(p.x*200,p.y*150):hctx.moveTo(p.x*200,p.y*150)});
+      hctx.stroke();
+    }
+    hctx.fillStyle='rgba(255,255,255,.9)';
+    for(const p of lm) hctx.fillRect(p.x*200-1,p.y*150-1,2.4,2.4);
+  }
+}
+
+async function startHands(){
+  btn.textContent='loading model…'; btn.disabled=true;
+  try{
+    const {HandLandmarker,FilesetResolver}=await import(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/vision_bundle.mjs');
+    const fs=await FilesetResolver.forVisionTasks(
+      'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+    landmarker=await HandLandmarker.createFromOptions(fs,{
+      baseOptions:{modelAssetPath:'https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task',delegate:'GPU'},
+      numHands:2, runningMode:'VIDEO'});
+    const stream=await navigator.mediaDevices.getUserMedia({video:{width:320,height:240}});
+    camEl.srcObject=stream; await camEl.play();
+    handOn=true; camWrap.classList.add('on');
+    btn.textContent='hand control ON — click to stop'; btn.classList.add('live'); btn.disabled=false;
+    pump();
+  }catch(e){
+    btn.textContent='failed: '+(e.message||e).slice(0,40); btn.disabled=false;
+    console.error(e);
+  }
+}
+function stopHands(){
+  handOn=false; camWrap.classList.remove('on');
+  if(camEl.srcObject){camEl.srcObject.getTracks().forEach(t=>t.stop());camEl.srcObject=null}
+  clearTimeout(rafHand); lastHands=[]; grabbed=null; gGrab=null;
+  btn.textContent='enable hand control'; btn.classList.remove('live');
+}
+function pump(){
+  if(!handOn) return;
+  // ~18fps: hand inference is the expensive part, and the graph renders at 60 regardless
+  if(camEl.readyState>=2){
+    try{
+      const res=landmarker.detectForVideo(camEl, performance.now());
+      lastHands=res.landmarks||[];
+      if(lastHands.length) applyGestures(lastHands);
+      else { gstate.textContent=''; gPrev=null; gGrab=null; grabbed=null; }
+    }catch(e){ /* transient frame errors are normal */ }
+  }
+  rafHand=setTimeout(pump,55);
+}
+btn.onclick=()=>handOn?stopHands():startHands();
+document.addEventListener('visibilitychange',()=>{ if(document.hidden&&handOn) stopHands(); });
+</script>
+</body>
+</html>
