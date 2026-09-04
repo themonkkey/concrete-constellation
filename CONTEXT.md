@@ -334,3 +334,16 @@ Two reusable skills were written from this work and live at `~/.claude/skills/`:
   work.** The current finBERT numbers are a working baseline, not a publishable result
   — they measure financial tone with a sign patch, which is exactly the thing the new
   model is meant to replace.
+
+---
+
+## 11. Addendum (4 Sep 2026): the eShram constellation
+
+The same repo now also hosts an unrelated dataset rendered with the same engines:
+India's eShram registry of unorganised workers (341.85M dump rows; 317.4M distinct
+UANs on the official dashboard), at `/eshram` and `/eshram-3d`. It is a structure
+map, not a sentiment index: states are anchors, districts are discs, corridors are
+inter-state registrations, and every mote is 10,000 people. Design spec and the
+rejected alternatives are in `eshram/SPEC.json`; the builder is
+`eshram/build_payload.py`. It shares nothing with the construction index except
+the rendering code, and its data lives at `/Volumes/EILA/PIF /eshram/agg`.
