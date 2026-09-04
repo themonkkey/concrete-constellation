@@ -1,0 +1,29 @@
+{
+ "hubs": 36,
+ "districts": 823,
+ "corridors": 100,
+ "corridors_forced": 18,
+ "edges_in": 78,
+ "motes": 31740,
+ "belt": 2445,
+ "dust_points": 34185,
+ "geo_matched": 781,
+ "geo_fallback": 42,
+ "payload_kb": 1170,
+ "calibrated_total": 317403822,
+ "dump_total": 341854283,
+ "motes_f": 17477,
+ "motes_m": 14263,
+ "groups_motes": [
+  16540,
+  3091,
+  3448,
+  4482,
+  192,
+  2283,
+  1704
+ ],
+ "size_floor_districts": 152,
+ "corridors_drawn_share": 0.8103,
+ "edges_in_share": 0.4533
+}

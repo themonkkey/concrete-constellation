@@ -84,3 +84,27 @@ picked cluster, a fist releases.
 
 Performance: motes are batched by colour (one `fillStyle` per colour per frame
 rather than 18,066), which keeps a full-density frame at roughly 6 ms.
+
+## eShram constellation
+
+`/eshram` (2D) and `/eshram-3d` render India's eShram registry of unorganised
+workers with the same engines: 36 states as unsized anchors, 823 districts as
+discs sized by state-calibrated registrations, 100 directed inter-state
+corridors (82 with 2,000+ movers, 18 forced so no state is an orphan), 78
+origin-state to destination-district corridors shown on hover, and 31,740 motes
+where one mote is 10,000 registrations, each carrying its own gender and trade
+group. The 2,445-dot belt is the gap between the data.gov.in dump (341.85M rows)
+and the eShram dashboard's 317.4M distinct UANs.
+
+Layout is geo-anchored by default (2024 LGD district boundaries, 781 of 823
+matched; the rest sit at their state centroid) with a Map/Force slider that
+blends toward the physics layout. Colour modes: Women (parity-pivoted female
+share; motes coloured by their own gender), Work (LQ typology on discs, actual
+trade on motes), Literacy (share not literate), Corridors (flow on edges,
+neutral nodes). The scrubber runs over the seven trade groups, since the
+registry has no time dimension.
+
+Build: `python3 eshram/build_payload.py` (needs the EILA drive at
+`/Volumes/EILA/PIF /eshram`, pandas, geopandas) then `python3 eshram/patch2d.py`
+for the 2D page; the 3D page is `eshram-3d.src.html` with the payload injected.
+Design spec and rejected alternatives: `eshram/SPEC.json`.
