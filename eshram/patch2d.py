@@ -359,5 +359,19 @@ else: bad.append("charts")
 # remove the 3D link hint (no eshram 3d yet in that hint) -> point to eshram-3d
 rep("hint3d",'<a href="/3d" style="color:var(--accent);text-decoration:none;','<a href="/eshram-3d" style="color:var(--accent);text-decoration:none;')
 
+rep("borders2d","""function draw(){
+  ctx.clearRect(0,0,W,H);
+  const labelRects=[];""",
+"""function draw(){
+  ctx.clearRect(0,0,W,H);
+  const labelRects=[];
+  if(P.geo>0&&DATA.borders){                          // state outlines, only as far as the layout is a map
+    const fa=P.geo, fo=hoverN||pinN, fs=fo?(fo.kind==='bucket'?fo.id:fo.parent):null;
+    ctx.setLineDash([]);ctx.lineJoin='round';
+    DATA.borders.forEach(b=>{const hi=b.id===fs; ctx.beginPath();
+      b.r.forEach(ring=>{ring.forEach((q,i)=>{const sx=W/2+tx+q[0]*scale,sy=H/2+ty+q[1]*scale;i?ctx.lineTo(sx,sy):ctx.moveTo(sx,sy);});ctx.closePath();});
+      ctx.fillStyle=`rgba(233,240,245,${(hi?.06:.022)*fa})`;ctx.fill();
+      ctx.strokeStyle=`rgba(233,240,245,${(hi?.6:.16)*fa})`;ctx.lineWidth=hi?1.3:.8;ctx.stroke();});
+  }""")
 open("eshram.html","w").write(h)
 print("ok:",len(ok),"| FAILED:",bad)

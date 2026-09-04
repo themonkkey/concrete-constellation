@@ -16,8 +16,9 @@ import pandas as pd
 
 A = "/Volumes/EILA/PIF /eshram/agg"
 SCRATCH = "/private/tmp/claude-501/-Users-thesinghaa/f2bf941b-f825-4a73-9bae-c060f58f9e63/scratchpad"
-SHP = f"{SCRATCH}/shp/91/DISTRICT_BOUNDARY.shp"
-MATCH = f"{SCRATCH}/match_table.json"
+SHP = os.path.expanduser("~/Downloads/eshram_shp_91/DISTRICT_BOUNDARY.shp")
+STATE_SHP = os.path.expanduser("~/Downloads/eshram_shp_91/STATE_BOUNDARY.shp")
+MATCH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "match_table.json")
 OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "eshram_data.json")
 COUNTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "counts.json")
 
@@ -321,6 +322,27 @@ for b in buckets:
 diff = belt_n - sum(x[2] for x in segs)
 segs.sort(key=lambda x: -x[1]); segs[0][2] += diff
 
+# ------------------------------------------------------------------ state boundaries
+STATE_ALIAS = {"ANDAMAN AND NICOBAR": "ANDAMAN AND NICOBAR ISLANDS", "PUDUCHERRY": "PONDICHERRY",
+               "DADRA AND NAGAR HAVELI AND DAMAN AND DIU": "THE DADRA AND NAGAR HAVELI AND DAMAN AND DIU"}
+sb = gpd.read_file(STATE_SHP).to_crs(4326)
+borders = []; bpts = 0
+for _, r in sb.iterrows():
+    name = fix(r.STATE)
+    if name.startswith("DISPUTED"): continue
+    name = STATE_ALIAS.get(name, name)
+    if name not in STATE_PT: raise SystemExit(f"unmapped state boundary: {r.STATE!r} -> {name!r}")
+    geom = r.geometry.simplify(0.025, preserve_topology=True)
+    parts = list(geom.geoms) if geom.geom_type == "MultiPolygon" else [geom]
+    parts.sort(key=lambda g: -g.area)
+    rings = []
+    for i, g in enumerate(parts):
+        if i and g.area < 0.004: continue           # keep the mainland and any island above ~20 km2
+        ring = [[round(x, 1), round(y, 1)] for x, y in (proj(lon, lat) for lon, lat in g.exterior.coords)]
+        rings.append(ring); bpts += len(ring)
+    borders.append({"id": sid(name), "r": rings})
+assert len(borders) == 36, len(borders)
+
 # ------------------------------------------------------------------ write
 meta = {"K": K, "unitsPerDeg": UNITS_PER_DEG, "lon0": LON0, "lat0": LAT0,
         "calibrated_total": CAL_TOTAL, "dump_total": DUMP_TOTAL, "dropped_legacy_rows": int(len(legacy)),
@@ -339,11 +361,11 @@ data = {"generated": "2026-09-04", "total": DUMP_TOTAL, "months": GROUPS, "axis"
         "cluster_series": {did(*k): v for k, v in d_series.items() if k in keys},
         "composite": composite, "dust": dust, "belt": belt_n, "belt_segments": segs,
         "modes": ["women", "work", "literacy", "corridors"], "work_hue": WORK_HUE, "typ_hue": TYP_HUE,
-        "typ_names": TYP, "group_names": GROUPS}
+        "typ_names": TYP, "group_names": GROUPS, "borders": borders}
 json.dump(data, open(OUT, "w"), separators=(",", ":"))
 counts = {"hubs": len(buckets), "districts": len(clusters), "corridors": len(edges),
           "corridors_forced": sum(e["forced"] for e in edges), "edges_in": len(edges_in), "motes": MOTES,
           "belt": belt_n, "dust_points": MOTES + belt_n, "geo_matched": tiers["matched"], "geo_fallback": tiers["fallback"],
-          "payload_kb": os.path.getsize(OUT) // 1024, **{k: meta[k] for k in ("calibrated_total", "dump_total", "motes_f", "motes_m", "groups_motes", "size_floor_districts", "corridors_drawn_share", "edges_in_share")}}
+          "payload_kb": os.path.getsize(OUT) // 1024, "border_points": bpts, **{k: meta[k] for k in ("calibrated_total", "dump_total", "motes_f", "motes_m", "groups_motes", "size_floor_districts", "corridors_drawn_share", "edges_in_share")}}
 json.dump(counts, open(COUNTS, "w"), indent=1)
 print(json.dumps(counts, indent=1))

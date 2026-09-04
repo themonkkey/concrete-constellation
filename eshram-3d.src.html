@@ -294,6 +294,18 @@ function draw(){
   ctx.fillStyle=`rgba(120,132,160,${colorMode==='corridors'?.10:.30})`;
   for(let i=0;i<belt.length;i+=step){ const p=project(belt[i].x,belt[i].y,belt[i].z); if(p) ctx.fillRect(p.x,p.y,1.2,1.2); }
 
+  // state outlines on the ground plane, fading out as the layout leaves the map
+  if(P.geo>0&&DATA.borders){
+    const fa=P.geo, fo=hoverN||focusN, fs=fo?(fo.kind==='bucket'?fo.id:fo.parent):null;
+    ctx.setLineDash([]);ctx.lineJoin='round';
+    for(const b of DATA.borders){ const hi=b.id===fs; ctx.beginPath(); let any=false;
+      for(const ring of b.r){ let first=true;
+        for(const q of ring){ const p=project(q[0],0,q[1]); if(!p){first=true;continue;} if(first){ctx.moveTo(p.x,p.y);first=false;} else ctx.lineTo(p.x,p.y); any=true; }
+        ctx.closePath(); }
+      if(!any) continue;
+      ctx.fillStyle=`rgba(233,240,245,${(hi?.07:.025)*fa})`; ctx.fill();
+      ctx.strokeStyle=`rgba(233,240,245,${(hi?.6:.18)*fa})`; ctx.lineWidth=hi?1.3:.8; ctx.stroke(); }
+  }
   // motes
   ctx.globalCompositeOperation=P.geo>0.5?'source-over':'lighter';
   const showG=monthIdx!==null&&colorMode==='women';
